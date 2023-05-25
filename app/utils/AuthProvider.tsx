@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { useRevalidator } from "@remix-run/react";
 import { useSupabase } from "~/supabaseContext";
 
@@ -15,7 +14,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_: null, session: any) => {
-        console.log("SESSION", session);
         revalidator.revalidate();
         setUser(session?.user ?? null);
       }
@@ -40,7 +38,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (error) throw error;
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
   };
