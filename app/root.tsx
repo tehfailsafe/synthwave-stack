@@ -62,6 +62,7 @@ export default function App() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  console.log(error);
 
   return (
     <html>
@@ -72,7 +73,7 @@ export function ErrorBoundary() {
       </head>
       <body>
         <div className="container mx-auto">
-          <h1>Oops! An error occurred.</h1>
+          <h1>Oops! An error occurred!</h1>
           <pre>{error.message}</pre>
         </div>
         <Scripts />
