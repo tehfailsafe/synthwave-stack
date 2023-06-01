@@ -1,4 +1,3 @@
-// SupabaseContext.tsx
 import { createContext, useContext, useState } from "react";
 
 export const SupabaseContext = createContext(null as any);

@@ -12,10 +12,7 @@ export const useRealtime = (table: string) => {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: table },
-        () => {
-          console.log("revalidating");
-          revalidator.revalidate();
-        }
+        () => revalidator.revalidate()
       )
       .subscribe();
   }, []);

@@ -2,14 +2,14 @@ import { useNavigate } from "@remix-run/react";
 import { useAuth } from "~/utils/AuthProvider";
 
 export default function Signin() {
-  const { signIn } = useAuth();
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSignin = async (e: Event) => {
     e.preventDefault();
 
-    await signIn({
-      email: "mike@failsafedesign.com",
+    await signUp({
+      email: "test@test.com",
       password: "password",
     });
 
