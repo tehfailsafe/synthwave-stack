@@ -1,4 +1,9 @@
-import { json, type LinksFunction } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  type LinksFunction,
+  LoaderArgs,
+} from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -18,10 +23,23 @@ import {
 } from "@supabase/auth-helpers-remix";
 import { SupabaseContext } from "./supabaseContext";
 import { AuthProvider } from "./utils/AuthProvider";
+import { getServerClient } from "./utils/getServerClient";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
-export async function loader() {
+export async function loader({ request }: LoaderArgs) {
+  const response = new Response();
+  const supabase = getServerClient(request, response);
+
+  const { data } = await supabase.auth.getSession();
+  const url = new URL(request.url);
+
+  if (!data.session && url.pathname !== "/signin") {
+    return redirect("/signin");
+  } else if (data.session && url.pathname === "/signin") {
+    return redirect("/");
+  }
+
   return json({
     ENV: {
       SUPABASE_URL: process.env.SUPABASE_URL,
