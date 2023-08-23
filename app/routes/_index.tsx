@@ -1,16 +1,18 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import {
-  Form,
-  useLoaderData,
-  useRevalidator,
-  useRouteError,
-} from "@remix-run/react";
-import { createServerClient } from "@supabase/auth-helpers-remix";
+import { Form, useLoaderData } from "@remix-run/react";
 import { Header } from "../components/Header";
 import { getServerClient } from "~/utils/getServerClient";
-import { useEffect } from "react";
 import { useSupabase } from "~/supabaseContext";
 import { useRealtime } from "~/utils/useRealtime";
+import {
+  Button,
+  Card,
+  Container,
+  Flex,
+  Heading,
+  Text,
+  Theme,
+} from "@radix-ui/themes";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -22,7 +24,7 @@ export const meta: V2_MetaFunction = () => {
 export const action = async ({ request }: LoaderArgs) => {
   const response = new Response();
   const supabase = getServerClient(request, response);
-  const { data, error } = await supabase.from("posts").insert({});
+  const { data, error } = await supabase.from("items").insert({});
 
   if (error) throw new Error(error.message);
   return { headers: response.headers };
@@ -32,7 +34,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const response = new Response();
   const supabase = getServerClient(request, response);
 
-  const { data, error } = await supabase.from("posts").select("*");
+  const { data, error } = await supabase.from("items").select("*");
   if (error) throw error;
 
   return { data, headers: response.headers };
@@ -40,12 +42,21 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function Index() {
   const { data } = useLoaderData();
-  useRealtime("posts");
+  useRealtime("items");
   const supabase = useSupabase();
 
   return (
     <>
+      <Theme appearance="dark">
+        <Container size="3" className="py-12">
+          <Flex direction="column">
+            <Heading>Test</Heading>
+            <Card>Test</Card>[]
+          </Flex>
+        </Container>
+      </Theme>
       <Header />
+      <Text>Test </Text>
       <div className="container mx-auto">
         {data.map((post) => (
           <div key={post.id} className="flex gap-4">
@@ -54,16 +65,16 @@ export default function Index() {
             <div
               className="cursor-pointer"
               onClick={async () =>
-                await supabase.from("posts").delete().eq("id", post.id)
+                await supabase.from("items").delete().eq("id", post.id)
               }
             >
               Delete
             </div>
           </div>
         ))}
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         <Form method="post">
-          <button type="submit">Submit</button>
+          <Button type="submit">Submit</Button>
         </Form>
       </div>
     </>

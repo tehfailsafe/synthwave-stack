@@ -15,6 +15,7 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import styles from "./tailwind.css";
+import themeStyles from "@radix-ui/themes/styles.css";
 import { revalidateAuthStateChange } from "./utils/revalidateAuthStateChange";
 import { useState } from "react";
 import {
@@ -24,8 +25,12 @@ import {
 import { SupabaseContext } from "./supabaseContext";
 import { AuthProvider } from "./utils/AuthProvider";
 import { getServerClient } from "./utils/getServerClient";
+import { Theme } from "@radix-ui/themes";
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: styles },
+  { rel: "stylesheet", href: themeStyles },
+];
 
 export async function loader({ request }: LoaderArgs) {
   const response = new Response();
@@ -57,7 +62,7 @@ export default function App() {
   revalidateAuthStateChange(supabase);
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -66,8 +71,10 @@ export default function App() {
       </head>
       <body>
         <SupabaseContext.Provider value={{ supabase }}>
-          <AuthProvider supabase={supabase}>
-            <Outlet />
+          <AuthProvider>
+            <Theme>
+              <Outlet />
+            </Theme>
           </AuthProvider>
         </SupabaseContext.Provider>
         <ScrollRestoration />
